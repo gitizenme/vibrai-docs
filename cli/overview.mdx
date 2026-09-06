@@ -76,7 +76,7 @@ vibrai generate --project song.vibrai --dry-run --log-level Debug --log-file /tm
 Every command that returns data supports `--json`. The output schema matches the MCP tool response for the same operation, so the two surfaces are interchangeable in scripts and tests.
 
 ```bash
-vibrai note list 2 0 --json | jq 'length'
+vibrai note list 2 1 --json | jq 'length'
 vibrai genre list --json | jq '.[].name'
 vibrai project info --project my-song.vibrai --json
 ```
@@ -89,10 +89,16 @@ vibrai project info --project my-song.vibrai --json
 | `1` | Generic error — file not found, project validation failure, `--force` required |
 | `2` | Bridge unreachable — `vibrai.amxd` not loaded or Live not running |
 | `3` | Live API timeout |
-| `4` | Live operation error — `CLIP_NOT_FOUND`, `INVALID_PITCH`, `MULTIPLE_MATCHES`, etc. |
+| `4` | Live operation error — `INVALID_PITCH`, `NOTE_ID_NOT_FOUND`, `MULTIPLE_MATCHES`, etc. |
 | `255` | Argument validation — out-of-range value, missing required argument |
 
 Missing required arguments produce a formatted `Error: …` line with exit 255 — no stack traces.
+
+`CLIP_NOT_FOUND` is a partial exception to the exit-4 row above: commands that write to a clip
+(`note set`/`add`/`modify`, `clip delete`/`fire`/`stop`) still exit `4` with it, but the two read
+commands that can land on an empty slot don't. `note list` on a missing clip returns an empty
+note array with exit `0` — it's not an error. `clip get` prints `No clip at track …` and exits
+`1`, not `4`.
 
 ## Reference pages
 
