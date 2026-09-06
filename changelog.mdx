@@ -4,6 +4,36 @@ description: "New features, improvements, and fixes in Vibrai."
 rss: true
 ---
 
+<Update label="1.7.3" description="September 6, 2026">
+  A fix-only release. Auto-recovery survives more than one bridge death, the walking bass plays the right seventh, and a failed clear no longer reports success.
+
+  ## Auto-recovery survives more than one bridge death
+
+  If the Max for Live bridge dies mid-session, Vibrai restarts it for you. That safety net was quietly broken — the restart limit never applied, the counter meant to enforce it was wired to something that does not count, and the "giving up" notice could never appear.
+
+  It works now: up to three automatic restarts, a clear "reload vibrai.amxd" notice if it runs out, and — the part a long session notices — that budget genuinely refills after five minutes.
+
+  ## The walking bass plays the right seventh
+
+  In a major key, a walking bass line could reach for a flat seventh that is not in the key, because the interval was hardcoded rather than taken from the mode. It now follows the chord you are on.
+
+  ## Generating drums before loading a kit tells you what to do
+
+  Generate drums before a kit is loaded and Vibrai writes placeholder pitches, warning that the kit was unreadable. It did not say that loading a kit afterwards will not go back and fix those notes — you have to retarget them. The warning now names that step.
+
+  ## A failed clear no longer looks like an empty set
+
+  `vibrai clip clear-all` previews what it would remove. If it could not read a single track, it printed "Nothing to clear" and reported success — so you would conclude the set was already empty. It now reports the failure.
+
+  ## Smaller things
+
+  Cancelling over MCP no longer returns "Internal error." `clear_clips` counts only the clips you actually had. Switching back to the Arrangement reports what you asked for rather than a stale reading. `vibrai version` can read the installed MCP server's version. The Claude Desktop extension carries a real build stamp. The Max for Live bridge re-checks its credential file's permissions on every read, and says so when it rejects an authentication attempt.
+
+  ## If you script Vibrai: one exit code changed
+
+  `vibrai clip clear-all` without `--yes` now exits `4` instead of `0` when it cannot read the set at all. If you had `vibrai clip clear-all && something-else`, that `something-else` used to run even when Vibrai could not see your set — it will now correctly stop.
+</Update>
+
 <Update label="1.7.2" description="September 2, 2026">
   A small patch: the downloadable macOS tarball is executable again, and the Max for Live bridge holds onto its credentials under load.
 
